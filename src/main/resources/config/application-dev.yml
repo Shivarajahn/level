@@ -23,7 +23,7 @@ spring:
         url: jdbc:mysql://localhost:3306/level?useUnicode=true&characterEncoding=utf8&useSSL=false
         name:
         username: root
-        password:
+        password: admin
         hikari:
             data-source-properties:
                 cachePrepStmts: true
@@ -62,7 +62,7 @@ liquibase:
     contexts: dev
 
 server:
-    port: 8080
+    port: 8082
 
 # ===================================================================
 # JHipster specific properties
