@@ -2,7 +2,7 @@ version: '2'
 services:
     level-mysql:
         container_name: level-mysql
-        image: mysql:5.7.13
+        image: mysql:5.7.12
         # volumes:
         #     - ~/volumes/jhipster/level/mysql/:/var/lib/mysql/
         environment:

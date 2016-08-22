@@ -1,6 +1,6 @@
 {
   "generator-jhipster": {
-    "jhipsterVersion": "3.5.1",
+    "jhipsterVersion": "3.4.1",
     "baseName": "level",
     "packageName": "com.sr.level",
     "packageFolder": "com/sr/level",

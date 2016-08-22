@@ -54,7 +54,7 @@
                         </li>
                         <li ui-sref-active="active" ng-switch-when="true">
                             <a ui-sref="password" ng-click="vm.collapseNavbar()">
-                                <span class="glyphicon glyphicon-lock"></span>&nbsp;
+                                <span class="glyphicon glyphicon-lock"></span>
                                 <span>Password</span>
                             </a>
                         </li>
@@ -129,7 +129,7 @@
                                 <span>Logs</span>
                             </a>
                         </li>
-                        <li ng-show="vm.swaggerEnabled" ui-sref-active="active">
+                        <li ng-hide="vm.inProduction || vm.swaggerDisabled" ui-sref-active="active">
                             <a ui-sref="docs" ng-click="vm.collapseNavbar()">
                                 <span class="glyphicon glyphicon-book"></span>&nbsp;
                                 <span>API</span>

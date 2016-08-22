@@ -5,32 +5,52 @@
         .module('levelApp')
         .controller('UserManagementController', UserManagementController);
 
-    UserManagementController.$inject = ['Principal', 'User', 'ParseLinks', 'AlertService', '$state', 'pagingParams', 'paginationConstants'];
+    UserManagementController.$inject = ['Principal', 'User', 'ParseLinks', 'paginationConstants'];
 
-    function UserManagementController(Principal, User, ParseLinks, AlertService, $state, pagingParams, paginationConstants) {
+    function UserManagementController(Principal, User, ParseLinks, paginationConstants) {
         var vm = this;
 
         vm.authorities = ['ROLE_USER', 'ROLE_ADMIN'];
+        vm.clear = clear;
         vm.currentAccount = null;
         vm.languages = null;
-        vm.loadAll = loadAll;
-        vm.setActive = setActive;
-        vm.users = [];
-        vm.page = 1;
-        vm.totalItems = null;
-        vm.clear = clear;
         vm.links = null;
+        vm.loadAll = loadAll;
         vm.loadPage = loadPage;
-        vm.predicate = pagingParams.predicate;
-        vm.reverse = pagingParams.ascending;
-        vm.itemsPerPage = paginationConstants.itemsPerPage;
-        vm.transition = transition;
+        vm.page = 1;
+        vm.setActive = setActive;
+        vm.totalItems = null;
+        vm.users = [];
+
 
         vm.loadAll();
+
         
+
         Principal.identity().then(function(account) {
             vm.currentAccount = account;
         });
+
+
+        function loadAll () {
+            User.query({page: vm.page - 1, size: paginationConstants.itemsPerPage}, function (result, headers) {
+                vm.links = ParseLinks.parse(headers('link'));
+                vm.totalItems = headers('X-Total-Count');
+
+                //hide anonymous user from user management: it's a required user for Spring Security
+                for(var i in result) {
+                    if(result[i]['login'] === 'anonymoususer') {
+                        result.splice(i,1);
+                    }
+                }
+                vm.users = result;
+            });
+        }
+
+        function loadPage (page) {
+            vm.page = page;
+            vm.loadAll();
+        }
 
         function setActive (user, isActivated) {
             user.activated = isActivated;
@@ -40,32 +60,6 @@
             });
         }
 
-        function loadAll () {
-            User.query({
-                page: pagingParams.page - 1,
-                size: vm.itemsPerPage,
-                sort: sort()
-            }, onSuccess, onError);
-        }
-
-        function onSuccess(data, headers) {
-            //hide anonymous user from user management: it's a required user for Spring Security
-            for (var i in data) {
-                if (data[i]['login'] === 'anonymoususer') {
-                    data.splice(i, 1);
-                }
-            }
-            vm.links = ParseLinks.parse(headers('link'));
-            vm.totalItems = headers('X-Total-Count');
-            vm.queryCount = vm.totalItems;
-            vm.page = pagingParams.page;
-            vm.users = data;
-        }
-
-        function onError(error) {
-            AlertService.error(error.data.message);
-        }
-
         function clear () {
             vm.user = {
                 id: null, login: null, firstName: null, lastName: null, email: null,
@@ -73,27 +67,8 @@
                 lastModifiedBy: null, lastModifiedDate: null, resetDate: null,
                 resetKey: null, authorities: null
             };
-        }
-
-        function sort () {
-            var result = [vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc')];
-            if (vm.predicate !== 'id') {
-                result.push('id');
-            }
-            return result;
-        }
-
-        function loadPage (page) {
-            vm.page = page;
-            vm.transition();
-        }
-
-        function transition () {
-            $state.transitionTo($state.$current, {
-                page: vm.page,
-                sort: vm.predicate + ',' + (vm.reverse ? 'asc' : 'desc'),
-                search: vm.currentSearch
-            });
+            vm.editForm.$setPristine();
+            vm.editForm.$setUntouched();
         }
     }
 })();

@@ -1,5 +1,4 @@
 package com.sr.level.security;
-
 import com.sr.level.domain.User;
 import com.sr.level.repository.UserRepository;
 import org.slf4j.Logger;
