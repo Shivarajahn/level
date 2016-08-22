@@ -27,7 +27,7 @@ import static springfox.documentation.spi.schema.contexts.ModelContext.inputPara
 
 @Component
 @Order(SwaggerPluginSupport.SWAGGER_PLUGIN_ORDER)
-@Profile(Constants.SPRING_PROFILE_SWAGGER)
+//@Profile(Constants.SPRING_PROFILE_SWAGGER)
 public class PageableParameterBuilderPlugin implements ParameterBuilderPlugin {
     private final TypeNameExtractor nameExtractor;
     private final TypeResolver resolver;
@@ -48,8 +48,8 @@ public class PageableParameterBuilderPlugin implements ParameterBuilderPlugin {
         ModelContext modelContext = inputParam(context.methodParameter().getParameterType(),
             context.getDocumentationType(),
             context.getAlternateTypeProvider(),
-            context.getGenericNamingStrategy(),
-            context.getIgnorableParameterTypes());
+            context.getGenericNamingStrategy());
+    //        context.getIgnorableParameterTypes())
         return modelRefFactory(modelContext, nameExtractor);
     }
 
